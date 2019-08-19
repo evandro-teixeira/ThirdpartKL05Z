@@ -55,7 +55,7 @@ typedef enum
 }MCP23008_pin_t;
 
 void mcp23008_init(uint8_t add,	GPIO_MemMapPtr gpio_reset,uint32_t pin_reset, /* PIN RESET */
-																GPIO_MemMapPtr gpio_int,uint32_t pin_int /* PIN INTERRUPT */);
+				GPIO_MemMapPtr gpio_int,uint32_t pin_int /* PIN INTERRUPT */);
 void mcp23008_pin_dir(mcp23008_pin_t pin, mcp23008_dir_t dir);
 void mcp23008_pull_set(uint8_t value);
 uint8_t mcp23008_pull_get(void);
@@ -66,8 +66,8 @@ uint8_t mcp23008_inputs_read(void);
 void mcp23008_interrupt_on_changes(mcp23008_pin_t pin); 
 void mcp23008_disable_interrupts(mcp23008_pin_t pin); 
 void mcp23008_acknowledge_interrupt(uint8_t *pin, uint8_t *value);
-void mcp23018_comparison_value(mcp23008_pin_t pin,mcp23008_value_t value);
+void mcp23008_comparison_value(mcp23008_pin_t pin,mcp23008_value_t value);
 void mcp23008_interrupt_pin_set(mcp23008_value_t pin,mcp23008_irq_t irq);
-void mcp23017_interrupt_value_get(void);
+void mcp23008_interrupt_value_get(void);
 																
 #endif /* THIRDPARTKL05Z_MCP23008_MCP23008_H_ */
