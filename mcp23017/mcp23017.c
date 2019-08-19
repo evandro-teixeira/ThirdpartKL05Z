@@ -76,9 +76,9 @@ static uint8_t mcp23017_read_register(uint8_t reg)
 /**
  *
  */ 
-void mcp23017_init(uint8_t add, GPIO_MemMapPtr gpio_reset,uint32_t pin_reset,/* PIN RESET 			*/
-															  GPIO_MemMapPtr gpio_intA,uint32_t pin_intA, /* PIN INTERRUPT A'*/
-																GPIO_MemMapPtr gpio_intB,uint32_t pin_intB /* PIN INTERRUPT B'*/)
+void mcp23017_init(uint8_t add, GPIO_MemMapPtr gpio_reset,uint32_t pin_reset,/* PIN RESET 	*/
+				GPIO_MemMapPtr gpio_intA,uint32_t pin_intA, /* PIN INTERRUPT A'*/
+				GPIO_MemMapPtr gpio_intB,uint32_t pin_intB /* PIN INTERRUPT B'*/)
 {
 	/* */
 	address = add;
