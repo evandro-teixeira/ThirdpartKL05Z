@@ -66,7 +66,7 @@ static uint8_t mcp23008_read_register(uint8_t reg)
  *
  */ 
 void mcp23008_init(uint8_t add,	GPIO_MemMapPtr gpio_reset,uint32_t pin_reset, /* PIN RESET */
-																GPIO_MemMapPtr gpio_int,uint32_t pin_int /* PIN INTERRUPT */)
+				GPIO_MemMapPtr gpio_int,uint32_t pin_int /* PIN INTERRUPT */)
 {
 	/* */
 	address = add;
@@ -232,7 +232,7 @@ void mcp23008_interrupt_pin_set(mcp23008_value_t pin,mcp23008_irq_t irq)
 /**
  *
  */
-void mcp23017_interrupt_value_get(void)
+void mcp23008_interrupt_value_get(void)
 {
 	return mcp23008_read_register(MCP23008_INTCAP);
 }
