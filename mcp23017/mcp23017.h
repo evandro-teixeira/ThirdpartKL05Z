@@ -41,113 +41,91 @@
 #define MCP23017_INT_ERR 	0xFF
 
 #define MCP23017_IODIR		\
-{				\
-	{	/* PORTA */	\
-		MCP23017_IODIRA	\
-	},			\
-	{	/* PORTB */	\
-		MCP23017_IODIRB	\
-	}			\
+{							\
+		/* PORTA */			\
+		MCP23017_IODIRA,	\
+		/* PORTB */			\
+		MCP23017_IODIRB		\
 }
 
 #define MCP23017_IPOL 		\
-{				\
-	{	/* PORTA */	\
-		MCP23017_IPOLA	\
-	},			\
-	{	/* PORTB */	\
-		MCP23017_IPOLB	\
-	}			\
+{							\
+		/* PORTA */			\
+		MCP23017_IPOLA,		\
+		/* PORTB */			\
+		MCP23017_IPOLB		\
 }
 
 #define MCP23017_GPINTEN 	\
-{				\
-	{	/* PORTA */		\
-		MCP23017_GPINTENA	\
-	},				\
-	{	/* PORTB */		\
+{							\
+		/* PORTA */			\
+		MCP23017_GPINTENA,	\
+		/* PORTB */			\
 		MCP23017_GPINTENB	\
-	}				\
 }
 
-#define MCP23017_DEFVAL			\
-{					\
-	{	/* PORTA */		\
-		MCP23017_DEFVALA	\
-	},				\
-	{	/* PORTB */		\
+#define MCP23017_DEFVAL		\
+{							\
+		/* PORTA */			\
+		MCP23017_DEFVALA,	\
+		/* PORTB */			\
 		MCP23017_DEFVALB	\
-	}				\
 }
 
-#define MCP23017_INTCON			\
-{					\
-	{	/* PORTA */		\
-		MCP23017_INTCONA	\
-	},				\
-	{	/* PORTB */		\
+#define MCP23017_INTCON		\
+{							\
+		/* PORTA */			\
+		MCP23017_INTCONA,	\
+		/* PORTB */			\
 		MCP23017_INTCONB	\
-	}				\
 }
 
-#define MCP23017_IOCON			\
-{					\
-	{	/* PORTA */		\
-		MCP23017_IOCONA		\
-	},				\
-	{	/* PORTB */		\
+#define MCP23017_IOCON		\
+{							\
+		/* PORTA */			\
+		MCP23017_IOCONA,	\
+		/* PORTB */			\
 		MCP23017_IOCONB		\
-	}				\
 }
 
-#define MCP23017_GPPU			\
-{					\
-	{	/* PORTA */		\
-		MCP23017_GPPUA		\
-	},				\
-	{	/* PORTB */		\
+#define MCP23017_GPPU		\
+{							\
+		/* PORTA */			\
+		MCP23017_GPPUA,		\
+		/* PORTB */			\
 		MCP23017_GPPUB		\
-	}				\
 }
 
-#define MCP23017_INTF			\
-{					\
-	{	/* PORTA */		\
-		MCP23017_INTFA		\
-	},				\
-	{	/* PORTB */		\
+#define MCP23017_INTF		\
+{							\
+		/* PORTA */			\
+		MCP23017_INTFA,		\
+		/* PORTB */			\
 		MCP23017_INTFB		\
-	}				\
 }
 
-#define MCP23017_INTCAP			\
-{					\
-	{	/* PORTA */		\
-		MCP23017_INTCAPA	\
-	},				\
-	{	/* PORTB */		\
+#define MCP23017_INTCAP		\
+{							\
+		/* PORTA */			\
+		MCP23017_INTCAPA,	\
+		/* PORTB */			\
 		MCP23017_INTCAPB	\
-	}				\
 }
 
-#define MCP23017_GPIO			\
-{					\
-	{	/* PORTA */		\
-		MCP23017_GPIOA		\
-	},				\
-	{	/* PORTB */		\
+#define MCP23017_GPIO		\
+{							\
+		/* PORTA */			\
+		MCP23017_GPIOA,		\
+		/* PORTB */			\
 		MCP23017_GPIOB		\
-	}				\
 }
 
-#define MCP23017_OLAT			\
-{					\
-	{	/* PORTA */		\
-		MCP23017_OLATA		\
-	},				\
-	{	/* PORTB */		\
+#define MCP23017_OLAT		\
+{							\
+		/* PORTA */			\
+		MCP23017_OLATA,		\
+		/* PORTB */			\
 		MCP23017_OLATB		\
-	}				\
 }
 
 typedef enum
@@ -188,11 +166,11 @@ typedef enum
 	MCP23017_PIN_ALL = 0xFF
 }mcp23017_pin_t;
 
-void mcp23017_init(uint8_t add, GPIO_MemMapPtr gpio_reset,uint32_t pin_reset, /* PIN RESET 	*/
+void mcp23017_init(I2C_MemMapPtr i2c,uint8_t add, GPIO_MemMapPtr gpio_reset,uint32_t pin_reset, /* PIN RESET 	*/
 				GPIO_MemMapPtr gpio_intA,uint32_t pin_intA, /* PIN INTERRUPT A'*/
 				GPIO_MemMapPtr gpio_intB,uint32_t pin_intB /* PIN INTERRUPT B'*/);
 
-void mcp23017_pin_dir(mcp23017_port_t port, mcp23017_pin_t pin, mcp23008_dir_t dir);
+void mcp23017_pin_dir(mcp23017_port_t port, mcp23017_pin_t pin, mcp23017_dir_t dir);
 void mcp23017_pull_set(mcp23017_port_t port,uint8_t value);
 uint8_t mcp23017_pull_get(mcp23017_port_t port);
 void mcp23017_input_polarity_set(mcp23017_port_t port,uint8_t value);
@@ -202,8 +180,8 @@ uint8_t mcp23017_inputs_read(mcp23017_port_t port);
 void mcp23017_interrupt_on_changes(mcp23017_port_t port,mcp23017_pin_t pin);
 void mcp23017_disable_interrupts(mcp23017_port_t port,mcp23017_pin_t pin);
 void mcp23017_acknowledge_interrupt(mcp23017_port_t port, uint8_t *pin, uint8_t *value);
-void mcp23017_comparison_value(mcp23017_port_t port, mcp23017_pin_t pin,mcp23008_value_t value);
-void mcp23017_interrupt_pin_set(mcp23017_port_t port, mcp23008_value_t pin,mcp23008_irq_t irq);
+void mcp23017_comparison_value(mcp23017_port_t port, mcp23017_pin_t pin,mcp23017_value_t value);
+void mcp23017_interrupt_pin_set(mcp23017_port_t port, mcp23017_value_t pin,mcp23017_irq_t irq);
 uint8_t mcp23017_interrupt_value_get(mcp23017_port_t port);
 
 

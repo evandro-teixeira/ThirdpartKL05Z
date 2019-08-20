@@ -8,6 +8,8 @@
 #ifndef THIRDPARTKL05Z_MCP23008_MCP23008_H_
 #define THIRDPARTKL05Z_MCP23008_MCP23008_H_
 
+#include "../KL05Z_Libraries/board_frdm_kl05z.h"
+
 #define MCP23008_ENABLE		LOW
 #define MCP23008_DISABLE	HIGH
 /* REGISTER ADDRESSES */
@@ -52,9 +54,9 @@ typedef enum
 	MCP23008_PIN6 = 0x40,
 	MCP23008_PIN7 = 0x80,
 	MCP23008_PIN_ALL = 0xFF
-}MCP23008_pin_t;
+}mcp23008_pin_t;
 
-void mcp23008_init(uint8_t add,	GPIO_MemMapPtr gpio_reset,uint32_t pin_reset, /* PIN RESET */
+void mcp23008_init(I2C_MemMapPtr i2c,uint8_t add,	GPIO_MemMapPtr gpio_reset,uint32_t pin_reset, /* PIN RESET */
 				GPIO_MemMapPtr gpio_int,uint32_t pin_int /* PIN INTERRUPT */);
 void mcp23008_pin_dir(mcp23008_pin_t pin, mcp23008_dir_t dir);
 void mcp23008_pull_set(uint8_t value);
@@ -68,6 +70,6 @@ void mcp23008_disable_interrupts(mcp23008_pin_t pin);
 void mcp23008_acknowledge_interrupt(uint8_t *pin, uint8_t *value);
 void mcp23008_comparison_value(mcp23008_pin_t pin,mcp23008_value_t value);
 void mcp23008_interrupt_pin_set(mcp23008_value_t pin,mcp23008_irq_t irq);
-void mcp23008_interrupt_value_get(void);
+uint8_t mcp23008_interrupt_value_get(void);
 																
 #endif /* THIRDPARTKL05Z_MCP23008_MCP23008_H_ */

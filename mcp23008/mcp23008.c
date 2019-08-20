@@ -20,13 +20,13 @@ typedef struct
  */ 
 static pin_t reset, interrupt;
 static uint8_t address;
-//extern bool flag_i2c_initialized;
+static I2C_MemMapPtr i2cptr;
 
 /**
  *
  */
 static void mcp23008_interrupt(void);
-static void mcp23008_reset(void);
+static void mcp23008_reset(bool value);
 static void mcp23008_write_register(uint8_t reg, uint8_t data);
 static uint8_t mcp23008_read_register(uint8_t reg);
 
@@ -43,7 +43,7 @@ static void mcp23008_interrupt(void)
  */
 static void mcp23008_reset(bool value)
 {
-	gpio_write(reset.io,reset.pin,value);
+	gpio_write(reset.io,reset.pin,(gpio_status_t)value);
 } 
 
 /**
@@ -51,7 +51,7 @@ static void mcp23008_reset(bool value)
  */
 static void mcp23008_write_register(uint8_t reg, uint8_t data)
 {
-	i2c_send_data(address,reg,data);
+	i2c_send_data(i2cptr,address,reg,data);
 } 
 
 /**
@@ -59,15 +59,17 @@ static void mcp23008_write_register(uint8_t reg, uint8_t data)
  */
 static uint8_t mcp23008_read_register(uint8_t reg)
 {
-	return i2c_read_data(address,reg);
+	return i2c_read_data(i2cptr,address,reg);
 } 
  
 /**
  *
  */ 
-void mcp23008_init(uint8_t add,	GPIO_MemMapPtr gpio_reset,uint32_t pin_reset, /* PIN RESET */
+void mcp23008_init(I2C_MemMapPtr i2c,uint8_t add,	GPIO_MemMapPtr gpio_reset,uint32_t pin_reset, /* PIN RESET */
 				GPIO_MemMapPtr gpio_int,uint32_t pin_int /* PIN INTERRUPT */)
 {
+	i2cptr = i2c;
+
 	/* */
 	address = add;
 	
@@ -77,7 +79,7 @@ void mcp23008_init(uint8_t add,	GPIO_MemMapPtr gpio_reset,uint32_t pin_reset, /*
 	
 	/* */
 	interrupt.io = gpio_int;
-	interrupt.pin_int = pin_int;
+	interrupt.pin = pin_int;
 	
 	/* */
 	gpio_init(reset.io,reset.pin,OUTPUT);
@@ -188,7 +190,7 @@ void mcp23008_disable_interrupts(mcp23008_pin_t pin)
 void mcp23008_acknowledge_interrupt(uint8_t *pin, uint8_t *value)
 {
 	*pin = mcp23008_read_register(MCP23008_INTF);
-	*valeu = mcp23008_read_register(MCP23008_INTCAP);
+	*value = mcp23008_read_register(MCP23008_INTCAP);
 } 
 
 /**
@@ -220,11 +222,11 @@ void mcp23008_interrupt_pin_set(mcp23008_value_t pin,mcp23008_irq_t irq)
 	val |= pin;
 	mcp23008_write_register(MCP23008_INTCON,val);
 	
-	uint8_t val = mcp23008_read_register(MCP23008_DEFVAL);
+	val = mcp23008_read_register(MCP23008_DEFVAL);
 	val |= pin;
 	mcp23008_write_register(MCP23008_DEFVAL,val);
 	
-	uint8_t val = mcp23008_read_register(MCP23008_GPINTEN);
+	val = mcp23008_read_register(MCP23008_GPINTEN);
 	val |= pin;
 	mcp23008_write_register(MCP23008_GPINTEN,val);	
 } 
@@ -232,7 +234,7 @@ void mcp23008_interrupt_pin_set(mcp23008_value_t pin,mcp23008_irq_t irq)
 /**
  *
  */
-void mcp23008_interrupt_value_get(void)
+uint8_t mcp23008_interrupt_value_get(void)
 {
 	return mcp23008_read_register(MCP23008_INTCAP);
 }

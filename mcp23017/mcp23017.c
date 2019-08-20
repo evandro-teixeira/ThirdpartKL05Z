@@ -18,9 +18,9 @@ typedef struct
 /**
  *
  */ 
-//extern bool flag_i2c_initialized;
 static pin_t reset, interrupt_a,interrupt_b;
 static uint8_t address;
+static I2C_MemMapPtr i2cptr;
 const static uint8_t iodir[MCP23017_NUMBER_PORT] = 		MCP23017_IODIR;
 const static uint8_t ipol[MCP23017_NUMBER_PORT] = 		MCP23017_IPOL;
 const static uint8_t gpinten[MCP23017_NUMBER_PORT] = 	MCP23017_GPINTEN;
@@ -62,7 +62,7 @@ static void mcp23017_reset(bool value)
  */
 static void mcp23017_write_register(uint8_t reg, uint8_t data)
 {
-	i2c_send_data(address,reg,data);
+	i2c_send_data(i2cptr,address,reg,data);
 }
 
 /**
@@ -70,16 +70,19 @@ static void mcp23017_write_register(uint8_t reg, uint8_t data)
  */
 static uint8_t mcp23017_read_register(uint8_t reg)
 {
-	return i2c_read_data(address,reg);
+	return i2c_read_data(i2cptr,address,reg);
 } 
 
 /**
  *
  */ 
-void mcp23017_init(uint8_t add, GPIO_MemMapPtr gpio_reset,uint32_t pin_reset,/* PIN RESET 	*/
+void mcp23017_init(I2C_MemMapPtr i2c,uint8_t add, GPIO_MemMapPtr gpio_reset,uint32_t pin_reset,/* PIN RESET 	*/
 				GPIO_MemMapPtr gpio_intA,uint32_t pin_intA, /* PIN INTERRUPT A'*/
 				GPIO_MemMapPtr gpio_intB,uint32_t pin_intB /* PIN INTERRUPT B'*/)
 {
+	/* */
+	i2cptr = i2c;
+
 	/* */
 	address = add;
 	
@@ -89,11 +92,11 @@ void mcp23017_init(uint8_t add, GPIO_MemMapPtr gpio_reset,uint32_t pin_reset,/* 
 	
 	/* */
 	interrupt_a.io = gpio_intA;
-	interrupt_a.pin_int = pin_intA;
+	interrupt_a.pin = pin_intA;
 	
 	/* */
 	interrupt_b.io = gpio_intB;
-	interrupt_b.pin_int = pin_intB;
+	interrupt_b.pin = pin_intB;
 	
 	/* */
 	gpio_init(reset.io,reset.pin,OUTPUT);
@@ -110,7 +113,7 @@ void mcp23017_init(uint8_t add, GPIO_MemMapPtr gpio_reset,uint32_t pin_reset,/* 
 /**
  *
  */
-void mcp23017_pin_dir(mcp23017_port_t port, mcp23017_pin_t pin, mcp23008_dir_t dir)
+void mcp23017_pin_dir(mcp23017_port_t port, mcp23017_pin_t pin, mcp23017_dir_t dir)
 {
 	uint8_t reg = 0;
 	
@@ -184,7 +187,7 @@ void mcp23017_interrupt_on_changes(mcp23017_port_t port,mcp23017_pin_t pin)
 	uint8_t valeu = mcp23017_read_register(iocon[port]);
 	valeu &= ~pin;
 	mcp23017_write_register(iocon[port],valeu);
-	valeu = mcp23008_read_register(gpinten[port]);
+	valeu = mcp23017_read_register(gpinten[port]);
 	valeu |= pin;
 	mcp23017_write_register(gpinten[port],valeu);
 }
@@ -212,14 +215,14 @@ void mcp23017_acknowledge_interrupt(mcp23017_port_t port, uint8_t *pin, uint8_t 
 /**
  *
  */
-void mcp23017_comparison_value(mcp23017_port_t port, mcp23017_pin_t pin,mcp23008_value_t value)
+void mcp23017_comparison_value(mcp23017_port_t port, mcp23017_pin_t pin,mcp23017_value_t value)
 {
 	uint8_t val = mcp23017_read_register(defval[port]);
-	if(value == MCP23008_HIGH)
+	if(value == MCP23017_HIGH)
 	{
 		val |= pin;
 	}
-	else if(value == MCP23008_LOW)
+	else if(value == MCP23017_LOW)
 	{
 		val &= ~pin;
 	}
@@ -232,7 +235,7 @@ void mcp23017_comparison_value(mcp23017_port_t port, mcp23017_pin_t pin,mcp23008
 /**
  *
  */
-void mcp23017_interrupt_pin_set(mcp23017_port_t port, mcp23008_value_t pin,mcp23008_irq_t irq)
+void mcp23017_interrupt_pin_set(mcp23017_port_t port, mcp23017_value_t pin,mcp23017_irq_t irq)
 {
 	uint8_t val = mcp23017_read_register(intcon[port]);
 	val |= pin;
