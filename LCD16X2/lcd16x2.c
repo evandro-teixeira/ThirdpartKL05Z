@@ -64,6 +64,8 @@ static void lcd16x2_byte_send(uint8_t en,uint8_t data);
  * @brief
  */
 volatile lcd_pins_t lcd_pins[LCD16X2_NUMBER_PIN] = {0};
+static char lcd_modo1 = 0;
+static char lcd_modo2 = 0;
 
 /**
  * @brief
@@ -111,6 +113,35 @@ void lcd16x2_init(	GPIO_MemMapPtr gpio_rs,	uint32_t pin_rs,	// Pin RS
 	{
 		gpio_init(lcd_pins[i].port ,lcd_pins[lcd_d7].pin,OUTPUT);
 	}
+
+	lcd16x2_delay(5000);
+	lcd16x2_nibble_send(0x03);
+	lcd16x2_delay(2500);
+	lcd16x2_nibble_send(0x03);
+	lcd16x2_delay(2500);
+	lcd16x2_nibble_send(0x03);
+	lcd16x2_delay(2500);
+	lcd16x2_nibble_send(0x02);
+	lcd16x2_delay(1500);
+
+	lcd16x2_byte_send(0,0x02);
+	lcd16x2_delay(1500);
+
+	lcd_modo1 = (char)(0x20 | 0x00 | 0x08);
+
+	lcd16x2_byte_send(0,0x20 | 0x00 | 0x08);
+	lcd16x2_delay(1500);
+
+	lcd_modo2 = (char)(0x08 | 0x04 | 0x00 | 0x00);
+
+	lcd16x2_byte_send(0, lcd_modo2);
+	lcd16x2_delay(1500);
+
+	lcd16x2_byte_send(0,0x01);
+	lcd16x2_delay(1500);
+
+	lcd16x2_byte_send(0,0x06);
+	lcd16x2_delay(1500);
 }
 
 /**
