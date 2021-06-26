@@ -114,6 +114,54 @@ bool hcsr04_GetDistance(uint32_t *Distance)
 /**
  *
  */
+bool hcsr04_GetPulseWidth(uint32_t *Pulse)
+{
+	uint8_t state_pin;
+	uint32_t pulse = 0;
+	uint16_t timeout[2] = {0};
+
+	/* Generate trigger pulse */
+	gpio_write(hcsr04_pin.Trig.gpio,hcsr04_pin.Trig.pin, HIGH);
+	hcsr04_Delay(PULSE_WIDTH);
+	gpio_write(hcsr04_pin.Trig.gpio,hcsr04_pin.Trig.pin, LOW);
+
+	/* Wait for rising edge on Echo signal */
+	do
+	{
+		timeout[0]++;
+		state_pin = gpio_read(hcsr04_pin.Echo.gpio,hcsr04_pin.Echo.pin);
+	}while((state_pin == LOW) && (timeout[0] < TIMEOUT));
+
+	/* start the timer */
+	hcsr04_ResetTimer();
+	pit_start( PIT_CHANNEL_0 );
+
+	/* Wait for falling edge on Echo signal */
+	do
+	{
+		timeout[1]++;
+		state_pin = gpio_read(hcsr04_pin.Echo.gpio,hcsr04_pin.Echo.pin);
+	}while((state_pin == HIGH) && (timeout[1] < TIMEOUT));
+
+	/* turn off the timer */
+	pit_stop( PIT_CHANNEL_0 );
+
+	/* Check if it is a valid reading */
+	if((timeout[0] >= TIMEOUT) || (timeout[1] >= TIMEOUT))
+	{
+		*Pulse = pulse;
+		return false;
+	}
+	else
+	{
+		*Pulse = (uint32_t)(hcsr04_GetTimer() * 10);
+		return true;
+	}
+}
+
+/**
+ *
+ */
 void hcsr04_Delay(uint32_t t)
 {
 	while(t)

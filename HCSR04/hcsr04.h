@@ -13,5 +13,6 @@
 void hcsr04_Init(GPIO_MemMapPtr gpio_Trig,	uint32_t pin_Trig,
 				GPIO_MemMapPtr gpio_Echo,	uint32_t pin_Echo);
 bool hcsr04_GetDistance(uint32_t *Distance);
+bool hcsr04_GetPulseWidth(uint32_t *Pulse);
 
 #endif /* THIRDPARTKL05Z_HCSR04_HCSR04_H_ */
